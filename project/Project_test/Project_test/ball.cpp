@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <math.h>
-using namespace std;
+#include "shader.h"
 
 #define A_SEGMENTS 100
 #define B_SEGMENTS 100
@@ -34,7 +34,7 @@ int draw_ball() {
 
 	glViewport(0, 0, screen_width, screen_height);
 
-	vector <float> ball;
+	std::vector <float> ball;
 
 	//生成球表面点坐标，存入vector
 	//实际上顶点和底点有重复，每一行的最后一个点和第一个点重合
@@ -55,7 +55,7 @@ int draw_ball() {
 		}
 	}
 
-	vector <int> ball_index;
+	std::vector <int> ball_index;
 
 	//访问索引
 	//每个vertex连接两个三角形，总共六个
@@ -93,59 +93,8 @@ int draw_ball() {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	const char* vertex_shader_source =
-		"#version 330 core\n"
-		"layout (location = 0) in vec3 aPos;\n"
-		"void main()\n"
-		"{\n"
-		"    gl_Position = vec4(aPos, 1.0);\n"
-		"}\n\0";
-	const char* fragment_shader_source =
-		"#version 330 core\n"
-		"out vec4 FragColor;\n"
-		"void main()\n"
-		"{\n"
-		"    FragColor = vec4(1.0f, 0.8f, 0.4f, 1.0f);\n"
-		"}\n\0";
+	Shader m_shader("C:\\Users\\severus\\Desktop\\OpenGL_learn\\shadervertexshader.vs", "C:\\Users\\severus\\Desktop\\OpenGL_learn\\shaderfragmentshader.fs");
 
-
-	int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
-	glCompileShader(vertex_shader);
-	int success;
-	char info_log[512];
-
-	glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertex_shader, 512, NULL, info_log);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << info_log << std::endl;
-	}
-
-	int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
-	glCompileShader(fragment_shader);
-
-	glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragment_shader, 512, NULL, info_log);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << info_log << std::endl;
-	}
-
-	int shader_program = glCreateProgram();
-	glAttachShader(shader_program, vertex_shader);
-	glAttachShader(shader_program, fragment_shader);
-	glLinkProgram(shader_program);
-
-	glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shader_program, 512, NULL, info_log);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << info_log << std::endl;
-	}
-
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);
 
 	// 线框模式
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -161,7 +110,7 @@ int draw_ball() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// 使用着色器程序
-		glUseProgram(shader_program);
+		m_shader.use();
 
 		// 绘制三角形
 		glBindVertexArray(vertex_array_object);

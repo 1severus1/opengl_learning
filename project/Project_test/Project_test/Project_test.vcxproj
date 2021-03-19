@@ -146,11 +146,16 @@
     <ClCompile Include="..\..\..\..\glad.c" />
     <ClCompile Include="quadri.cpp" />
     <ClCompile Include="function_main.cpp" />
+    <ClCompile Include="shader.cpp" />
     <ClCompile Include="triangle.cpp" />
     <ClCompile Include="ball.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="shader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project_test.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
